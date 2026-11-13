@@ -220,6 +220,30 @@
                             </a>
                         </li>
 
+
+                        <!-- CARRITO DE COMPRAS -->
+                        <li class="nav-item">
+
+                            @php
+                                $cantidadCarrito = collect(session('carrito', []))
+                                    ->sum('cantidad');
+                            @endphp
+
+                            <a class="nav-link {{ request()->routeIs('carrito.*') ? 'active' : '' }}"
+                            href="{{ route('carrito.index') }}">
+
+                                🛒 Carrito
+
+                                <span class="badge rounded-pill"
+                                    style="background:#f5a400; color:white;">
+                                    {{ $cantidadCarrito }}
+                                </span>
+
+                            </a>
+
+                        </li>
+
+
                     </ul>
                 </div>
             </div>
@@ -227,9 +251,31 @@
     </header>
 
     <!-- CONTENIDO -->
-    <main class="container py-5">
-        @yield('contenido')
-    </main>
+    
+<main class="container py-5">
+
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
+    @yield('contenido')
+
+</main>
+
 
     <!-- PIE DE PÁGINA -->
     <footer>

@@ -160,6 +160,59 @@
                         : 'Agotado' }}
 
                 </div>
+                
+                
+                    <!-- AGREGAR AL CARRITO -->
+                    <div class="mt-4">
+
+                        @if(($producto['existencia'] ?? 0) > 0)
+
+                            <form action="{{ route('carrito.agregar') }}"
+                                method="POST">
+
+                                @csrf
+
+                                <input type="hidden"
+                                    name="id"
+                                    value="{{ $producto['id'] }}">
+
+                                <div class="mb-3">
+
+                                    <label for="cantidad"
+                                        class="form-label fw-semibold">
+                                        Cantidad
+                                    </label>
+
+                                    <input type="number"
+                                        id="cantidad"
+                                        name="cantidad"
+                                        class="form-control"
+                                        value="1"
+                                        min="1"
+                                        max="{{ $producto['existencia'] }}"
+                                        required
+                                        style="max-width:140px;">
+
+                                </div>
+
+                                <button type="submit"
+                                        class="btn btn-tienda w-100">
+                                    🛒 Agregar al carrito
+                                </button>
+
+                            </form>
+
+                        @else
+
+                            <button class="btn btn-secondary w-100" disabled>
+                                Producto agotado
+                            </button>
+
+                        @endif
+
+                    </div>
+
+
 
                 <a href="{{ route('catalogo') }}"
                    class="btn btn-tienda mt-4">
