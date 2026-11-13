@@ -1,0 +1,363 @@
+{
+  "info": {
+    "name": "Actividad 3.4 - API REST Admin Sanctum",
+    "_postman_id": "apisCELG-collection-3.4",
+    "description": "Colección completa para la Actividad 3.4 con autenticación SANCTUM desde la tabla administradores y CRUDs para Administradores, Productos (con imágenes), Proveedores, Clientes y Pedidos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "0. Demostración Sin Token (401)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/productos",
+          "host": ["{{base_url}}"],
+          "path": ["productos"]
+        },
+        "description": "Demuestra que sin token las rutas privadas rechazan la petición con HTTP 401 Unauthorized."
+      }
+    },
+    {
+      "name": "1. Autenticación Administrador",
+      "item": [
+        {
+          "name": "Login Administrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.token) {",
+                  "        pm.environment.set('token', jsonData.token);",
+                  "        console.log('Token guardado en entorno:', jsonData.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Perfil Admin (Validar Token)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/perfil",
+              "host": ["{{base_url}}"],
+              "path": ["perfil"]
+            }
+          }
+        },
+        {
+          "name": "Logout Administrador",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Administradores (CRUD)",
+      "item": [
+        {
+          "name": "Listar Administradores (GET)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/administradores", "host": ["{{base_url}}"], "path": ["administradores"] }
+          }
+        },
+        {
+          "name": "Crear Administrador (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Admin Secundario\",\n  \"email\": \"admin2@test.com\",\n  \"password\": \"secreto123\",\n  \"telefono\": \"3398765432\",\n  \"activo\": true\n}"
+            },
+            "url": { "raw": "{{base_url}}/administradores", "host": ["{{base_url}}"], "path": ["administradores"] }
+          }
+        },
+        {
+          "name": "Consultar Administrador (GET {id})",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/administradores/1", "host": ["{{base_url}}"], "path": ["administradores", "1"] }
+          }
+        },
+        {
+          "name": "Editar Administrador (PUT {id})",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Administrador Principal Actualizado\",\n  \"telefono\": \"3399887766\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/administradores/1", "host": ["{{base_url}}"], "path": ["administradores", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Administrador (DELETE {id})",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/administradores/2", "host": ["{{base_url}}"], "path": ["administradores", "2"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Productos (CRUD + Imágenes)",
+      "item": [
+        {
+          "name": "Listar Productos (GET)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/productos", "host": ["{{base_url}}"], "path": ["productos"] }
+          }
+        },
+        {
+          "name": "Crear Producto con Imagen (POST form-data)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "nombre", "value": "Mouse Gamer Inalámbrico", "type": "text" },
+                { "key": "descripcion", "value": "Sensor óptico de 16000 DPI con batería recargable", "type": "text" },
+                { "key": "precio", "value": "899.90", "type": "text" },
+                { "key": "stock", "value": "15", "type": "text" },
+                { "key": "categoria", "value": "Accesorios", "type": "text" },
+                { "key": "imagen", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/productos", "host": ["{{base_url}}"], "path": ["productos"] }
+          }
+        },
+        {
+          "name": "Consultar Producto (GET {id})",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/productos/1", "host": ["{{base_url}}"], "path": ["productos", "1"] }
+          }
+        },
+        {
+          "name": "Editar Producto (PUT / POST {id})",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "nombre", "value": "Laptop Dell XPS 15 (Edición 2026)", "type": "text" },
+                { "key": "precio", "value": "26500.00", "type": "text" },
+                { "key": "stock", "value": "8", "type": "text" },
+                { "key": "imagen", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/productos/1", "host": ["{{base_url}}"], "path": ["productos", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Producto (DELETE {id})",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/productos/2", "host": ["{{base_url}}"], "path": ["productos", "2"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Proveedores (CRUD)",
+      "item": [
+        {
+          "name": "Listar Proveedores (GET)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/proveedores", "host": ["{{base_url}}"], "path": ["proveedores"] }
+          }
+        },
+        {
+          "name": "Crear Proveedor (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Distribuidora Global\",\n  \"empresa\": \"Global Tech Imports\",\n  \"email\": \"ventas@globaltech.com\",\n  \"telefono\": \"5511223344\",\n  \"direccion\": \"Parque Industrial Norte #50\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/proveedores", "host": ["{{base_url}}"], "path": ["proveedores"] }
+          }
+        },
+        {
+          "name": "Editar Proveedor (PUT {id})",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"5588990011\",\n  \"direccion\": \"Nueva dirección #789\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/proveedores/1", "host": ["{{base_url}}"], "path": ["proveedores", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Proveedor (DELETE {id})",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/proveedores/1", "host": ["{{base_url}}"], "path": ["proveedores", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Clientes (CRUD)",
+      "item": [
+        {
+          "name": "Listar Clientes (GET)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/clientes", "host": ["{{base_url}}"], "path": ["clientes"] }
+          }
+        },
+        {
+          "name": "Crear Cliente (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"María Fernanda Soto\",\n  \"email\": \"maria.soto@correo.com\",\n  \"telefono\": \"3344556677\",\n  \"direccion\": \"Av. Chapultepec #120\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/clientes", "host": ["{{base_url}}"], "path": ["clientes"] }
+          }
+        },
+        {
+          "name": "Editar Cliente (PUT {id})",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"3399001122\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/clientes/1", "host": ["{{base_url}}"], "path": ["clientes", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Cliente (DELETE {id})",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/clientes/1", "host": ["{{base_url}}"], "path": ["clientes", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Pedidos",
+      "item": [
+        {
+          "name": "Listar Pedidos (GET)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/pedidos", "host": ["{{base_url}}"], "path": ["pedidos"] }
+          }
+        },
+        {
+          "name": "Consultar Pedido (GET {id})",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/pedidos/1", "host": ["{{base_url}}"], "path": ["pedidos", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar Pedido (DELETE {id})",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/pedidos/1", "host": ["{{base_url}}"], "path": ["pedidos", "1"] }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+<?php
+
+use App\Http\Controllers\Fakestoreapicontroller;
+use Illuminate\Support\Facades\Route;
+
+//Catálogo general de productos desde la API
+Route::get('/', [Fakestoreapicontroller::class, 'catalogo'])->name('catalogo.index');
+Route::get('/catalogo', [Fakestoreapicontroller::class, 'catalogo']);
+Route::get('/productos', [Fakestoreapicontroller::class, 'catalogo']);
+
+
+//Vista de detalle del producto por ID
+Route::get('/catalogo/producto/{id}', [Fakestoreapicontroller::class, 'detalle'])
+    ->name('catalogo.producto')
+    ->whereNumber('id');
+Route::get('/producto/{id}', [Fakestoreapicontroller::class, 'detalle'])->whereNumber('id');
+Route::get('/productos/{id}', [Fakestoreapicontroller::class, 'detalle'])->whereNumber('id');
+
+// Endpoints API en formato JSON
+Route::get('/api/fakestore/productos', [Fakestoreapicontroller::class, 'productos']);
+Route::get('/api/fakestore/productos/detalle/{id}', [Fakestoreapicontroller::class, 'productoById'])
+    ->whereNumber('id');
